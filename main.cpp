@@ -10,7 +10,7 @@ unsigned char *board = nullptr;
 
 int screenWidth = 120;
 int screenHeight = 60;
-int boardOffsetX = 2;
+int boardOffsetX = screenWidth/2 - boardWidth/2 + 1;
 int boardOffsetY = 2;
 
 int RotatedIndex(int pieceX, int pieceY, int rotation){
