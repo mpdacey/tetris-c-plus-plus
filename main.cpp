@@ -172,6 +172,19 @@ int main() {
 			{
 				board = LockPieceIntoBoard(board, currentPiece, currentRotation, currentX, currentY);
 
+				for (int pieceY = 0; pieceY < 4; pieceY++)
+					if (currentY + pieceY < boardHeight - 1) {
+						bool line = true;
+						for (int x = 1; x < boardWidth - 1; x++)
+							line &= board[(currentY + pieceY) * boardWidth + x] != 0;
+
+						if (line)
+						{
+							for (int x = 1; x < boardWidth - 1; x++)
+								board[(currentY + pieceY) * boardWidth + x] = 8;
+						}
+					}
+
 				ChooseNextPiece(&currentX, &currentY, &currentRotation, &currentPiece);
 				gameOverFlag = !DoesPieceFit(currentPiece, currentRotation, currentX, currentY);
 			}
