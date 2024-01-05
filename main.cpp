@@ -3,7 +3,7 @@ using namespace std;
 
 #include <Windows.h>
 
-wstring tetromino[7];
+wstring tetrominos[7];
 int boardWidth = 10;
 int boardHeight = 20;
 unsigned char *board = nullptr;
@@ -40,6 +40,22 @@ wchar_t* DrawField(wchar_t* screen) {
 			screen[(y + boardOffsetY) * screenWidth + x + boardOffsetX] = L" ABCDEFG=#"[board[y * boardWidth + x]];
 
 	return screen;
+}
+
+bool DoesPieceFit(int tetrominoIndex, int rotation, int posX, int posY) {
+	for (int pieceX = 0; pieceX < 4; pieceX++) {
+		for (int pieceY = 0; pieceY < 4; pieceY++) {
+			int pieceIndex = RotatedIndex(pieceX, pieceY, rotation);
+			int boardIndex = (posY + pieceY) * boardWidth + posX + pieceX;
+
+			if (pieceX + posX > -1 && pieceX + posX < boardWidth &&
+				pieceY + posY > -1 && pieceY + posY < boardHeight &&
+				tetrominos[tetrominoIndex][pieceIndex] == L'X' && board[boardIndex] != 0)
+				return false;
+		}
+	}
+
+	return true;
 }
 
 int main() {
