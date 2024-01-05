@@ -89,6 +89,15 @@ wchar_t* DrawActivePiece(wchar_t* screen, int currentPiece, int currentRotation,
 	return screen;
 }
 
+unsigned char* LockPieceIntoBoard(unsigned char* board, int currentPiece, int currentRotation, int currentX, int currentY) {
+	for (int pieceX = 0; pieceX < 4; pieceX++)
+		for (int pieceY = 0; pieceY < 4; pieceY++)
+			if (tetrominos[currentPiece][RotatedIndex(pieceX, pieceY, currentRotation)] == L'X')
+				board[(currentY + pieceY) * boardWidth + currentX + pieceX] = currentPiece + 1;
+
+	return board;
+}
+
 void ChooseNextPiece(int* currentX, int* currentY, int* currentRotation, int* currentPiece) {
 	*currentX = boardWidth / 2;
 	*currentY = 0;
@@ -158,13 +167,12 @@ int main() {
 
 		if (forceDown) {
 			speedCounter = 0;
-			if (DoesPieceFit(currentPiece, currentRotation, currentX, currentY + 1)) {
-				currentY++;
-			}
+			if (DoesPieceFit(currentPiece, currentRotation, currentX, currentY + 1)) currentY++;
 			else
 			{
-				ChooseNextPiece(&currentX, &currentY, &currentRotation, &currentPiece);
+				board = LockPieceIntoBoard(board, currentPiece, currentRotation, currentX, currentY);
 
+				ChooseNextPiece(&currentX, &currentY, &currentRotation, &currentPiece);
 				gameOverFlag = !DoesPieceFit(currentPiece, currentRotation, currentX, currentY);
 			}
 		}
