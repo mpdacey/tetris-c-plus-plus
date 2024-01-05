@@ -3,6 +3,7 @@
 using namespace std;
 
 #include <Windows.h>
+#include <vector>
 
 wstring tetrominos[7];
 int boardWidth = 10;
@@ -145,6 +146,8 @@ int main() {
 	int speedCounter = 0;
 	bool forceDown = false;
 
+	vector<int> lines;
+
 	while(!gameOverFlag){
 		this_thread::sleep_for(50ms);
 		speedCounter++;
@@ -182,6 +185,8 @@ int main() {
 						{
 							for (int x = 1; x < boardWidth - 1; x++)
 								board[(currentY + pieceY) * boardWidth + x] = 8;
+
+							lines.push_back(currentY + pieceY);
 						}
 					}
 
@@ -192,8 +197,22 @@ int main() {
 
 		screen = DrawField(screen);
 		screen = DrawActivePiece(screen, currentPiece, currentRotation, currentX, currentY);
-		
+
 		WriteConsoleOutputCharacter(console, screen, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
+
+		if (!lines.empty()) {
+			this_thread::sleep_for(400ms);
+
+			for (auto& v : lines) {
+				for (int x = 1; x < boardWidth - 1; x++) {
+					for (int y = v; y > 0; y--)
+						board[y * boardWidth + x] = board[(y - 1) * boardWidth + x];
+					board[x] = 0;
+				}
+			}
+
+			lines.clear();
+		}
 	}
 
 	return 0;
