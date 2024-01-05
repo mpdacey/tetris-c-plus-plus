@@ -125,8 +125,14 @@ int main() {
 	bool inputKeys[5];
 	bool rotateHold = false;
 
+	int speed = 20;
+	int speedCounter = 0;
+	bool forceDown = false;
+
 	while(!gameOverFlag){
 		this_thread::sleep_for(50ms);
+		speedCounter++;
+		forceDown = speedCounter == speed;
 
 		for (int key = 0; key < 5; key++)
 			inputKeys[key] = (0x8000 & GetAsyncKeyState((unsigned char)("\x27\x25\x28ZX"[key]))) != 0;
@@ -142,6 +148,17 @@ int main() {
 		if (!rotateHold && inputKeys[4] && DoesPieceFit(currentPiece, currentRotation + 1, currentX, currentY)) currentRotation++;
 
 		rotateHold = inputKeys[3] || inputKeys[4];
+
+		if (forceDown) {
+			speedCounter = 0;
+			if (DoesPieceFit(currentPiece, currentRotation, currentX, currentY + 1)) {
+				currentY++;
+			}
+			else
+			{
+				gameOverFlag = !DoesPieceFit(currentPiece, currentRotation, currentX, currentY);
+			}
+		}
 
 		screen = DrawField(screen);
 		screen = DrawActivePiece(screen, currentPiece, currentRotation, currentX, currentY);
