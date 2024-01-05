@@ -89,6 +89,13 @@ wchar_t* DrawActivePiece(wchar_t* screen, int currentPiece, int currentRotation,
 	return screen;
 }
 
+void ChooseNextPiece(int* currentX, int* currentY, int* currentRotation, int* currentPiece) {
+	*currentX = boardWidth / 2;
+	*currentY = 0;
+	*currentRotation = 0;
+	*currentPiece = rand() % 7;
+}
+
 bool DoesPieceFit(int tetrominoIndex, int rotation, int posX, int posY) {
 	for (int pieceX = 0; pieceX < 4; pieceX++) {
 		for (int pieceY = 0; pieceY < 4; pieceY++) {
@@ -117,7 +124,7 @@ int main() {
 
 	bool gameOverFlag = false;
 
-	int currentPiece = 1;
+	int currentPiece = rand() % 7;
 	int currentRotation = 0;
 	int currentX = boardWidth / 2;
 	int currentY = 0;
@@ -156,6 +163,8 @@ int main() {
 			}
 			else
 			{
+				ChooseNextPiece(&currentX, &currentY, &currentRotation, &currentPiece);
+
 				gameOverFlag = !DoesPieceFit(currentPiece, currentRotation, currentX, currentY);
 			}
 		}
