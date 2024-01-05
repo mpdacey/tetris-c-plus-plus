@@ -123,6 +123,7 @@ int main() {
 	int currentY = 0;
 
 	bool inputKeys[5];
+	bool rotateHold = false;
 
 	while(!gameOverFlag){
 		this_thread::sleep_for(50ms);
@@ -133,12 +134,14 @@ int main() {
 		if (inputKeys[0] && DoesPieceFit(currentPiece, currentRotation, currentX + 1, currentY)) currentX++;
 		if (inputKeys[1] && DoesPieceFit(currentPiece, currentRotation, currentX - 1, currentY)) currentX--;
 		if (inputKeys[2] && DoesPieceFit(currentPiece, currentRotation, currentX, currentY + 1)) currentY++;
-		if (inputKeys[3] && DoesPieceFit(currentPiece, currentRotation - 1 + 4, currentX, currentY)) {
+		if (!rotateHold && inputKeys[3] && DoesPieceFit(currentPiece, currentRotation - 1 + 4, currentX, currentY)) {
 			currentRotation--;
 			if (currentRotation < 0)
 				currentRotation += 4;
 		}
-		if (inputKeys[4] && DoesPieceFit(currentPiece, currentRotation + 1, currentX, currentY)) currentRotation++;
+		if (!rotateHold && inputKeys[4] && DoesPieceFit(currentPiece, currentRotation + 1, currentX, currentY)) currentRotation++;
+
+		rotateHold = inputKeys[3] || inputKeys[4];
 
 		screen = DrawField(screen);
 		screen = DrawActivePiece(screen, currentPiece, currentRotation, currentX, currentY);
