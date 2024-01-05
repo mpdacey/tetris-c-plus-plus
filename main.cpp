@@ -34,6 +34,14 @@ void InitialiseBoard(){
 			board[y*boardWidth + x] = (x == 0 || x == boardWidth -1 || y == boardHeight - 1) ? 9 : 0;
 }
 
+wchar_t* DrawField(wchar_t* screen) {
+	for (int x = 0; x < boardWidth; x++)
+		for (int y = 0; y < boardHeight; y++)
+			screen[(y + boardOffsetY) * screenWidth + x + boardOffsetX] = L" ABCDEFG=#"[board[y * boardWidth + x]];
+
+	return screen;
+}
+
 int main() {
 
 	InitialiseBoard();
@@ -47,10 +55,8 @@ int main() {
 	bool gameOverFlag = false;
 
 	while(!gameOverFlag){
-		for (int x = 0; x < boardWidth; x++)
-			for (int y = 0; y < boardHeight; y++)
-				screen[(y + boardOffsetY) * screenWidth + x + boardOffsetX] = L" ABCDEFG=#"[board[y * boardWidth+x]];
-
+		screen = DrawField(screen);
+		
 		WriteConsoleOutputCharacter(console, screen, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
 	}
 
