@@ -1,4 +1,5 @@
 #include <iostream>
+#include <thread>
 using namespace std;
 
 #include <Windows.h>
@@ -124,6 +125,8 @@ int main() {
 	bool inputKeys[4];
 
 	while(!gameOverFlag){
+		this_thread::sleep_for(50ms);
+
 		for (int key = 0; key < 4; key++)
 			inputKeys[key] = (0x8000 & GetAsyncKeyState((unsigned char)("\x27\x25\x28Z"[key]))) != 0;
 
