@@ -79,6 +79,15 @@ wchar_t* DrawField(wchar_t* screen) {
 	return screen;
 }
 
+wchar_t* DrawActivePiece(wchar_t* screen, int currentPiece, int currentRotation, int currentX, int currentY) {
+	for (int pieceX = 0; pieceX < 4; pieceX++)
+		for (int pieceY = 0; pieceY < 4; pieceY++)
+			if (tetrominos[currentPiece][RotatedIndex(pieceX, pieceY, currentRotation)] == L'X')
+				screen[(currentY + pieceY + boardOffsetY) * screenWidth + currentX + pieceX + boardOffsetX] = currentPiece + 65;
+
+	return screen;
+}
+
 bool DoesPieceFit(int tetrominoIndex, int rotation, int posX, int posY) {
 	for (int pieceX = 0; pieceX < 4; pieceX++) {
 		for (int pieceY = 0; pieceY < 4; pieceY++) {
@@ -107,8 +116,14 @@ int main() {
 
 	bool gameOverFlag = false;
 
+	int currentPiece = 1;
+	int currentRotation = 0;
+	int currentX = boardWidth / 2;
+	int currentY = 0;
+
 	while(!gameOverFlag){
 		screen = DrawField(screen);
+		screen = DrawActivePiece(screen, currentPiece, currentRotation, currentX, currentY);
 		
 		WriteConsoleOutputCharacter(console, screen, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
 	}
