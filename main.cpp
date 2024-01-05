@@ -24,6 +24,43 @@ int RotatedIndex(int pieceX, int pieceY, int rotation){
 	return 0;
 }
 
+void CreatePieceAssets() {
+	tetrominos[0].append(L"..X.");
+	tetrominos[0].append(L"..X.");
+	tetrominos[0].append(L"..X.");
+	tetrominos[0].append(L"..X.");
+
+	tetrominos[1].append(L"....");
+	tetrominos[1].append(L".XXX");
+	tetrominos[1].append(L"..X.");
+	tetrominos[1].append(L"....");
+
+	tetrominos[2].append(L"....");
+	tetrominos[2].append(L"...X");
+	tetrominos[2].append(L".XXX");
+	tetrominos[2].append(L"....");
+
+	tetrominos[3].append(L"....");
+	tetrominos[3].append(L"X...");
+	tetrominos[3].append(L"XXX.");
+	tetrominos[3].append(L"....");
+
+	tetrominos[4].append(L"....");
+	tetrominos[4].append(L".XX.");
+	tetrominos[4].append(L".XX.");
+	tetrominos[4].append(L"....");
+
+	tetrominos[5].append(L"....");
+	tetrominos[5].append(L"XX..");
+	tetrominos[5].append(L".XX.");
+	tetrominos[5].append(L"....");
+
+	tetrominos[6].append(L"....");
+	tetrominos[6].append(L"..XX");
+	tetrominos[6].append(L".XX.");
+	tetrominos[6].append(L"....");
+}
+
 void InitialiseBoard(){
 	boardWidth += 2;
 	boardHeight += 1;
@@ -59,7 +96,7 @@ bool DoesPieceFit(int tetrominoIndex, int rotation, int posX, int posY) {
 }
 
 int main() {
-
+	CreatePieceAssets();
 	InitialiseBoard();
 
 	wchar_t* screen = new wchar_t[screenWidth*screenHeight];
