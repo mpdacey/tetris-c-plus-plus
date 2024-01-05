@@ -122,13 +122,23 @@ int main() {
 	int currentX = boardWidth / 2;
 	int currentY = 0;
 
-	bool inputKeys[4];
+	bool inputKeys[5];
 
 	while(!gameOverFlag){
 		this_thread::sleep_for(50ms);
 
-		for (int key = 0; key < 4; key++)
-			inputKeys[key] = (0x8000 & GetAsyncKeyState((unsigned char)("\x27\x25\x28Z"[key]))) != 0;
+		for (int key = 0; key < 5; key++)
+			inputKeys[key] = (0x8000 & GetAsyncKeyState((unsigned char)("\x27\x25\x28ZX"[key]))) != 0;
+
+		if (inputKeys[0] && DoesPieceFit(currentPiece, currentRotation, currentX + 1, currentY)) currentX++;
+		if (inputKeys[1] && DoesPieceFit(currentPiece, currentRotation, currentX - 1, currentY)) currentX--;
+		if (inputKeys[2] && DoesPieceFit(currentPiece, currentRotation, currentX, currentY + 1)) currentY++;
+		if (inputKeys[3] && DoesPieceFit(currentPiece, currentRotation - 1 + 4, currentX, currentY)) {
+			currentRotation--;
+			if (currentRotation < 0)
+				currentRotation += 4;
+		}
+		if (inputKeys[4] && DoesPieceFit(currentPiece, currentRotation + 1, currentX, currentY)) currentRotation++;
 
 		screen = DrawField(screen);
 		screen = DrawActivePiece(screen, currentPiece, currentRotation, currentX, currentY);
