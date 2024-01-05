@@ -121,7 +121,12 @@ int main() {
 	int currentX = boardWidth / 2;
 	int currentY = 0;
 
+	bool inputKeys[4];
+
 	while(!gameOverFlag){
+		for (int key = 0; key < 4; key++)
+			inputKeys[key] = (0x8000 & GetAsyncKeyState((unsigned char)("\x27\x25\x28Z"[key]))) != 0;
+
 		screen = DrawField(screen);
 		screen = DrawActivePiece(screen, currentPiece, currentRotation, currentX, currentY);
 		
