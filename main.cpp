@@ -4,6 +4,7 @@ using namespace std;
 
 #include <Windows.h>
 #include <vector>
+#include <cstdlib>
 
 wstring tetrominos[7];
 int boardWidth = 10;
