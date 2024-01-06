@@ -166,6 +166,8 @@ int main() {
 	bool forceDown = false;
 
 	vector<int> lines;
+	int linesCleared = 0;
+	int levelUpThreshold = 10;
 
 	while(!gameOverFlag){
 		this_thread::sleep_for(50ms);
@@ -213,9 +215,15 @@ int main() {
 						board[y * boardWidth + x] = board[(y - 1) * boardWidth + x];
 					board[x] = 0;
 				}
+				linesCleared++;
 			}
 
 			lines.clear();
+
+			if (linesCleared >= levelUpThreshold) {
+				linesCleared = 0;
+				speed -= speed == 1 ? 0 : 1;
+			}
 		}
 	}
 
