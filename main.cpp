@@ -10,6 +10,7 @@ wstring tetrominos[7];
 int boardWidth = 10;
 int boardHeight = 20;
 unsigned char *board = nullptr;
+unsigned char* nextPreview = nullptr;
 
 int screenWidth = 120;
 int screenHeight = 60;
@@ -74,6 +75,13 @@ void InitialiseBoard(){
 			board[y*boardWidth + x] = (x == 0 || x == boardWidth -1 || y == boardHeight - 1) ? 9 : 0;
 }
 
+void InitialiseNextPieceBorder() {
+	nextPreview = new unsigned char[6 * 6];
+	for(int x = 0; x < 6; x++)
+		for(int y = 0; y < 6; y++)
+			nextPreview[y*6+x] = (x == 0 || x == 5 || y == 0 || y == 5) ? 9 : 0;
+}
+
 wchar_t* DrawField(wchar_t* screen) {
 	for (int x = 0; x < boardWidth; x++)
 		for (int y = 0; y < boardHeight; y++)
@@ -87,6 +95,19 @@ wchar_t* DrawActivePiece(wchar_t* screen, int currentPiece, int currentRotation,
 		for (int pieceY = 0; pieceY < 4; pieceY++)
 			if (tetrominos[currentPiece][RotatedIndex(pieceX, pieceY, currentRotation)] == L'X')
 				screen[(currentY + pieceY + boardOffsetY) * screenWidth + currentX + pieceX + boardOffsetX] = currentPiece + 65;
+
+	return screen;
+}
+
+wchar_t* DrawNextPiece(wchar_t* screen, int nextPiece, int nextX, int nextY) {
+	for (int x = 0; x < 6; x++)
+		for (int y = 0; y < 6; y++)
+			screen[(y + boardOffsetY +2) * screenWidth + x + boardOffsetX + boardWidth + 2] = L" ABCDEFG=#"[nextPreview[y * 6 + x]];
+
+	for (int pieceX = 0; pieceX < 4; pieceX++)
+		for (int pieceY = 0; pieceY < 4; pieceY++)
+			if (tetrominos[nextPiece][RotatedIndex(pieceX, pieceY, 0)] == L'X')
+				nextPreview[(pieceY+1) * 6 + pieceX+1] = nextPiece + 1;
 
 	return screen;
 }
@@ -145,6 +166,7 @@ bool DoesPieceFit(int tetrominoIndex, int rotation, int posX, int posY) {
 int main() {
 	CreatePieceAssets();
 	InitialiseBoard();
+	InitialiseNextPieceBorder();
 
 	wchar_t* screen = new wchar_t[screenWidth*screenHeight];
 	for (int i = 0; i < screenWidth*screenHeight; i++) screen[i] = L' ';
@@ -158,6 +180,10 @@ int main() {
 	int currentRotation = 0;
 	int currentX = 0;
 	int currentY = 0;
+
+	int nextX = boardWidth + 4;
+	int nextY = 3;
+	int nextPiece = 0;
 
 	bool inputKeys[5];
 	bool rotateHold = false;
@@ -211,6 +237,7 @@ int main() {
 
 		screen = DrawField(screen);
 		screen = DrawActivePiece(screen, currentPiece, currentRotation, currentX, currentY);
+		screen = DrawNextPiece(screen, nextPiece, nextX, nextY);
 		swprintf_s(&screen[2 * screenWidth + boardWidth + 6], 16, L"SCORE: %8d", score);
 
 		WriteConsoleOutputCharacter(console, screen, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
