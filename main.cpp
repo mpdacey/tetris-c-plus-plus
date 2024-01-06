@@ -27,10 +27,10 @@ int RotatedIndex(int pieceX, int pieceY, int rotation){
 }
 
 void CreatePieceAssets() {
-	tetrominos[0].append(L"..X.");
-	tetrominos[0].append(L"..X.");
-	tetrominos[0].append(L"..X.");
-	tetrominos[0].append(L"..X.");
+	tetrominos[0].append(L"....");
+	tetrominos[0].append(L"XXXX");
+	tetrominos[0].append(L"....");
+	tetrominos[0].append(L"....");
 
 	tetrominos[1].append(L"....");
 	tetrominos[1].append(L".XXX");
