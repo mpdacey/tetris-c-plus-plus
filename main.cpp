@@ -169,6 +169,8 @@ int main() {
 	int linesCleared = 0;
 	int levelUpThreshold = 10;
 
+	int score = 0;
+
 	while(!gameOverFlag){
 		this_thread::sleep_for(50ms);
 		speedCounter++;
@@ -179,7 +181,10 @@ int main() {
 
 		if (inputKeys[0] && DoesPieceFit(currentPiece, currentRotation, currentX + 1, currentY)) currentX++;
 		if (inputKeys[1] && DoesPieceFit(currentPiece, currentRotation, currentX - 1, currentY)) currentX--;
-		if (inputKeys[2] && DoesPieceFit(currentPiece, currentRotation, currentX, currentY + 1)) currentY++;
+		if (inputKeys[2] && DoesPieceFit(currentPiece, currentRotation, currentX, currentY + 1)) {
+			currentY++;
+			score++;
+		}
 		if (!rotateHold && inputKeys[3] && DoesPieceFit(currentPiece, currentRotation - 1 + 4, currentX, currentY)) {
 			currentRotation--;
 			if (currentRotation < 0)
@@ -203,11 +208,13 @@ int main() {
 
 		screen = DrawField(screen);
 		screen = DrawActivePiece(screen, currentPiece, currentRotation, currentX, currentY);
+		swprintf_s(&screen[2 * screenWidth + boardWidth + 6], 16, L"SCORE: %8d", score);
 
 		WriteConsoleOutputCharacter(console, screen, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
 
 		if (!lines.empty()) {
 			this_thread::sleep_for(400ms);
+			score += (1<< lines.size())*100;
 
 			for (auto& v : lines) {
 				for (int x = 1; x < boardWidth - 1; x++) {
@@ -226,6 +233,10 @@ int main() {
 			}
 		}
 	}
+
+	CloseHandle(console);
+	cout << "GAME OVER! Final Score:" << score << endl;
+	system("pause");
 
 	return 0;
 }
