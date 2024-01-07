@@ -140,11 +140,14 @@ unsigned char* FindLinesInBoard(unsigned char* board, int currentY, vector<int>*
 	return board;
 }
 
-void ChooseNextPiece(int* currentX, int* currentY, int* currentRotation, int* currentPiece) {
-	*currentX = boardWidth / 2-2;
+void SetPiece(int* currentX, int* currentY, int* currentRotation) {
+	*currentX = boardWidth / 2 - 2;
 	*currentY = 0;
 	*currentRotation = 0;
-	*currentPiece = rand() * time(NULL) % 7;
+}
+
+int ChooseNextPiece(int randOffset = 0) {
+	return ((int)rand()+randOffset) * time(NULL) % 7;
 }
 
 bool DoesPieceFit(int tetrominoIndex, int rotation, int posX, int posY) {
@@ -199,7 +202,8 @@ int main() {
 	int level = 0;
 	int score = 0;
 
-	ChooseNextPiece(&currentX, &currentY, &currentRotation, &currentPiece);
+	currentPiece = ChooseNextPiece();
+	SetPiece(&currentX, &currentY, &currentRotation);
 
 	while(!gameOverFlag){
 		this_thread::sleep_for(50ms);
@@ -231,7 +235,8 @@ int main() {
 			{
 				board = LockPieceIntoBoard(board, currentPiece, currentRotation, currentX, currentY);
 				board = FindLinesInBoard(board, currentY, &lines);
-				ChooseNextPiece(&currentX, &currentY, &currentRotation, &currentPiece);
+				currentPiece = nextPiece;
+				SetPiece(&currentX, &currentY, &currentRotation);
 				gameOverFlag = !DoesPieceFit(currentPiece, currentRotation, currentX, currentY);
 			}
 		}
