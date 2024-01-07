@@ -185,7 +185,10 @@ int main() {
 
 	int nextPiece = 0;
 
-	bool inputKeys[5];
+	int heldPiece = -1;
+	bool hasHeld = false;
+
+	bool inputKeys[6];
 	bool rotateHold = false;
 
 	int speed = 21;
@@ -208,8 +211,8 @@ int main() {
 		speedCounter++;
 		forceDown = speedCounter == speed;
 
-		for (int key = 0; key < 5; key++)
-			inputKeys[key] = (0x8000 & GetAsyncKeyState((unsigned char)("\x27\x25\x28ZX"[key]))) != 0;
+		for (int key = 0; key < 6; key++)
+			inputKeys[key] = (0x8000 & GetAsyncKeyState((unsigned char)("\x27\x25\x28ZXC"[key]))) != 0;
 
 		if (inputKeys[0] && DoesPieceFit(currentPiece, currentRotation, currentX + 1, currentY)) currentX++;
 		if (inputKeys[1] && DoesPieceFit(currentPiece, currentRotation, currentX - 1, currentY)) currentX--;
@@ -226,6 +229,22 @@ int main() {
 
 		rotateHold = inputKeys[3] || inputKeys[4];
 
+		if (!hasHeld && inputKeys[5]) {
+			if (heldPiece == -1) {
+				heldPiece = currentPiece;
+				currentPiece = nextPiece;
+				nextPiece = ChooseNextPiece();
+			}
+			else {
+				int temp = currentPiece;
+				currentPiece = heldPiece;
+				heldPiece = temp;
+			}
+
+			SetPiece(&currentX, &currentY, &currentRotation);
+			hasHeld = true;
+		}
+
 		if (forceDown) {
 			speedCounter = 0;
 			if (DoesPieceFit(currentPiece, currentRotation, currentX, currentY + 1)) currentY++;
@@ -237,6 +256,7 @@ int main() {
 				SetPiece(&currentX, &currentY, &currentRotation);
 				nextPiece = ChooseNextPiece();
 				gameOverFlag = !DoesPieceFit(currentPiece, currentRotation, currentX, currentY);
+				hasHeld = false;
 			}
 		}
 
