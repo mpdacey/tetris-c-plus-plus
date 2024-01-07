@@ -188,7 +188,7 @@ int main() {
 	bool inputKeys[5];
 	bool rotateHold = false;
 
-	int speed = 20;
+	int speed = 21;
 	int speedCounter = 0;
 	bool forceDown = false;
 
@@ -196,6 +196,7 @@ int main() {
 	int linesCleared = 0;
 	int levelUpThreshold = 10;
 
+	int level = 0;
 	int score = 0;
 
 	ChooseNextPiece(&currentX, &currentY, &currentRotation, &currentPiece);
@@ -237,8 +238,9 @@ int main() {
 
 		screen = DrawField(screen);
 		screen = DrawActivePiece(screen, currentPiece, currentRotation, currentX, currentY);
-		screen = DrawNextPiece(screen, nextPiece, nextX, nextY);
-		swprintf_s(&screen[2 * screenWidth + boardWidth + 6], 16, L"SCORE: %8d", score);
+		//screen = DrawNextPiece(screen, nextPiece, nextX, nextY);
+		swprintf_s(&screen[1 * screenWidth + boardWidth + 4], 16, L"SCORE: %8d", score);
+		swprintf_s(&screen[2 * screenWidth + boardWidth + 5], 16, L"LEVEL: %8d", level);
 
 		WriteConsoleOutputCharacter(console, screen, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
 
@@ -259,13 +261,14 @@ int main() {
 
 			if (linesCleared >= levelUpThreshold) {
 				linesCleared = 0;
-				speed -= speed == 1 ? 0 : 1;
+				level++;
+				speed -= speed == 1 ? 0 : 2;
 			}
 		}
 	}
 
 	CloseHandle(console);
-	cout << "GAME OVER! Final Score:" << score << endl;
+	cout << "GAME OVER! Final Score: " << score << endl;
 	system("pause");
 
 	return 0;
