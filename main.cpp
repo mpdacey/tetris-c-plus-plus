@@ -99,15 +99,14 @@ wchar_t* DrawActivePiece(wchar_t* screen, int currentPiece, int currentRotation,
 	return screen;
 }
 
-wchar_t* DrawNextPiece(wchar_t* screen, int nextPiece, int nextX, int nextY) {
+wchar_t* DrawNextPiece(wchar_t* screen, int nextPiece) {
+	for (int pieceX = 0; pieceX < 4; pieceX++)
+		for (int pieceY = 0; pieceY < 4; pieceY++)
+			nextPreview[(pieceY + 1) * 6 + pieceX + 1] = (tetrominos[nextPiece][RotatedIndex(pieceX, pieceY, 0)] == L'X') ? nextPiece + 1 : 0;
+
 	for (int x = 0; x < 6; x++)
 		for (int y = 0; y < 6; y++)
 			screen[(y + boardOffsetY +2) * screenWidth + x + boardOffsetX + boardWidth + 2] = L" ABCDEFG=#"[nextPreview[y * 6 + x]];
-
-	for (int pieceX = 0; pieceX < 4; pieceX++)
-		for (int pieceY = 0; pieceY < 4; pieceY++)
-			if (tetrominos[nextPiece][RotatedIndex(pieceX, pieceY, 0)] == L'X')
-				nextPreview[(pieceY+1) * 6 + pieceX+1] = nextPiece + 1;
 
 	return screen;
 }
@@ -184,8 +183,6 @@ int main() {
 	int currentX = 0;
 	int currentY = 0;
 
-	int nextX = boardWidth + 4;
-	int nextY = 3;
 	int nextPiece = 0;
 
 	bool inputKeys[5];
@@ -203,6 +200,7 @@ int main() {
 	int score = 0;
 
 	currentPiece = ChooseNextPiece();
+	nextPiece = ChooseNextPiece(time(NULL) * 2);
 	SetPiece(&currentX, &currentY, &currentRotation);
 
 	while(!gameOverFlag){
@@ -237,13 +235,14 @@ int main() {
 				board = FindLinesInBoard(board, currentY, &lines);
 				currentPiece = nextPiece;
 				SetPiece(&currentX, &currentY, &currentRotation);
+				nextPiece = ChooseNextPiece();
 				gameOverFlag = !DoesPieceFit(currentPiece, currentRotation, currentX, currentY);
 			}
 		}
 
 		screen = DrawField(screen);
 		screen = DrawActivePiece(screen, currentPiece, currentRotation, currentX, currentY);
-		//screen = DrawNextPiece(screen, nextPiece, nextX, nextY);
+		screen = DrawNextPiece(screen, nextPiece);
 		swprintf_s(&screen[1 * screenWidth + boardWidth + 4], 16, L"SCORE: %8d", score);
 		swprintf_s(&screen[2 * screenWidth + boardWidth + 5], 16, L"LEVEL: %8d", level);
 
