@@ -146,7 +146,7 @@ void SetPiece(int* currentX, int* currentY, int* currentRotation) {
 }
 
 int ChooseNextPiece(int randOffset = 0) {
-	return ((int)rand()+randOffset) * time(NULL) % 7;
+	return abs((rand()+randOffset) * (int)time(NULL)) % 7;
 }
 
 bool DoesPieceFit(int tetrominoIndex, int rotation, int posX, int posY) {
