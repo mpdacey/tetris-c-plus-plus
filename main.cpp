@@ -165,6 +165,13 @@ bool DoesPieceFit(int tetrominoIndex, int rotation, int posX, int posY) {
 	return true;
 }
 
+void PrintCurrentHeld(wchar_t* screen, int heldPiece) {
+	char pieceLetters[7] = { L'I', L'T', L'L', L'J', L'O', L'Z', L'S' };
+	char nextPiece = (heldPiece == -1) ? L' ' : pieceLetters[heldPiece];
+
+	swprintf_s(&screen[(boardHeight+2) * screenWidth + boardWidth + 5], 16, L"HELD: %9c", nextPiece);
+}
+
 int main() {
 	CreatePieceAssets();
 	InitialiseBoard();
@@ -265,6 +272,7 @@ int main() {
 		screen = DrawNextPiece(screen, nextPiece);
 		swprintf_s(&screen[1 * screenWidth + boardWidth + 4], 16, L"SCORE: %8d", score);
 		swprintf_s(&screen[2 * screenWidth + boardWidth + 5], 16, L"LEVEL: %8d", level);
+		PrintCurrentHeld(screen,heldPiece);
 
 		WriteConsoleOutputCharacter(console, screen, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
 
